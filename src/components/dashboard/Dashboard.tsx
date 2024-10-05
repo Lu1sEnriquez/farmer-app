@@ -45,13 +45,32 @@ function MapComponent() {
     zoom: 9,
   });
 
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setViewState({
+            ...viewState,
+            latitude, // Actualiza con la ubicación del usuario
+            longitude,
+            zoom: 12, // Puedes ajustar el zoom como prefieras
+          });
+        },
+        (error) => {
+          console.error("Error obteniendo la ubicación del usuario:", error);
+        }
+      );
+    }
+  }, []);
+
   return (
     <Map
       {...viewState}
       onMove={(evt) => setViewState(evt.viewState)}
       style={{ width: "100%", height: "100%" }}
       mapStyle="mapbox://styles/mapbox/streets-v11"
-      mapboxAccessToken="YOUR_MAPBOX_ACCESS_TOKEN_HERE"
+      mapboxAccessToken="pk.eyJ1IjoiZXJpY2phc2llbDE3IiwiYSI6ImNtMXdndmplcDBvNnEya29oZXhkNWphaWgifQ.622bZ8vb1dMS3B57NPw7Gg"
     >
       <Marker
         longitude={viewState.longitude}
