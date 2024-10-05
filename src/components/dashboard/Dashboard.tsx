@@ -44,7 +44,15 @@ function MapComponent() {
     latitude: 40,
     zoom: 9,
   });
-
+  const handleMarkerDragEnd = (event: any) => {
+    const { lngLat } = event;
+    console.log("Coordenadas del marcador:", lngLat);
+    setViewState({
+      ...viewState,
+      longitude: lngLat.lng,
+      latitude: lngLat.lat,
+    });
+  };
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -52,9 +60,9 @@ function MapComponent() {
           const { latitude, longitude } = position.coords;
           setViewState({
             ...viewState,
-            latitude, // Actualiza con la ubicación del usuario
+            latitude,
             longitude,
-            zoom: 12, // Puedes ajustar el zoom como prefieras
+            zoom: 12,
           });
         },
         (error) => {
@@ -69,12 +77,15 @@ function MapComponent() {
       {...viewState}
       onMove={(evt) => setViewState(evt.viewState)}
       style={{ width: "100%", height: "100%" }}
-      mapStyle="mapbox://styles/mapbox/streets-v11"
+      mapStyle="mapbox://styles/mapbox/streets-v12"
+      // mapboxAccessToken={process.env.MAPS_TOKEN}
       mapboxAccessToken="pk.eyJ1IjoiZXJpY2phc2llbDE3IiwiYSI6ImNtMXdndmplcDBvNnEya29oZXhkNWphaWgifQ.622bZ8vb1dMS3B57NPw7Gg"
     >
       <Marker
         longitude={viewState.longitude}
         latitude={viewState.latitude}
+        draggable
+        onDragEnd={handleMarkerDragEnd}
         color="red"
       />
     </Map>
@@ -195,31 +206,12 @@ export default function Dashboard() {
             </Card>
           </div>
 
-          {/* Recomendaciones de IA */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Recomendaciones de IA</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ul className="list-disc pl-5 space-y-2">
-                <li>
-                  Tipos de semillas recomendados: Maíz híbrido resistente a la
-                  sequía, Soja de ciclo corto
-                </li>
-                <li>Tiempo óptimo de plantación: Segunda semana de abril</li>
-                <li>
-                  Recomendaciones de riego: Implementar riego por goteo,
-                  programar riegos cortos y frecuentes
-                </li>
-                <li>
-                  Sugerencia de cultivo: Considerar la rotación con leguminosas
-                  para mejorar la salud del suelo
-                </li>
-              </ul>
-            </CardContent>
-          </Card>
         </div>
       </div>
     </div>
   );
 }
+function setViewState(arg0: any) {
+  throw new Error("Function not implemented.");
+}
+
