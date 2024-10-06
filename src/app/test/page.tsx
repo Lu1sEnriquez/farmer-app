@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { WiHumidity, WiSunset, WiWindy } from "react-icons/wi";
+import { WiHumidity, WiWindy } from "react-icons/wi";
 import { SiMoonrepo } from "react-icons/si";
 import { FiSunrise } from "react-icons/fi";
 import { TbSunset } from "react-icons/tb";

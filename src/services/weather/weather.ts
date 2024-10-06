@@ -22,7 +22,7 @@ export async function getCurrentWeather(Longitud: string, Latitud: string) {
   }
 }
 
-export async function getFutureForecast(longitud: string, latitud: string, dateTime: Date) {
+export async function getForecast(longitud: string, latitud: string, dateTime: Date) {
   try {
     const dt = dateTime.toISOString().split('T')[0];
     const userDate = new Date(dt);
