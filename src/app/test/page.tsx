@@ -7,7 +7,7 @@ import { FiSunrise } from "react-icons/fi";
 import { TbSunset } from "react-icons/tb";
 import {
   getCurrentWeather,
-  getFutureForecast,
+  getForecast,
 } from "@/services/weather/weather";
 import { Calendar } from "@/components/ui/calendar";
 import { format, addDays } from "date-fns";
@@ -54,7 +54,7 @@ export default function TestPage() {
     setSelectedDate(date);
     if (date) {
       try {
-        const forecastData = await getFutureForecast(
+        const forecastData = await getForecast(
           "27.062924270743704",
           "-109.46802713192112",
           date
