@@ -14,7 +14,7 @@ import "@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import {  MapMouseEvent } from "mapbox-gl";
-import { DatePicker } from "../ui/data-picker";
+
 
 // Tipos para el estado del marcador y la vista del mapa
 interface MarkerType {
@@ -155,10 +155,10 @@ export const Mapa = () => {
           />
           <div className="flex flex-row space-x-2">
             <Button onClick={searchLocation}>Buscar</Button>
-            <Button variant={"destructive"} onClick={removeMarker}>
+            <Button className="bg-red-500 dark:hover:bg-red-600 hover:bg-red-400 text-white" onClick={removeMarker}>
               <MdDelete size={30} />
             </Button>
-            <DatePicker/>
+            
           </div>
         </div>
       </Card>
