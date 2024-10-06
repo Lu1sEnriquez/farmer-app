@@ -37,7 +37,10 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <Navbar/>
+          <div className="container mx-auto">
+
           {children}
+          </div>
         </ThemeProvider>
       </body>
     </html>
