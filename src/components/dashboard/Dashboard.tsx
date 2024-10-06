@@ -1,7 +1,7 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Mapa } from "../Mapa/Mapa";
+import SeedModal from "./ModalSelectAnalisis";
 
 
 
@@ -23,29 +23,7 @@ export default function Dashboard() {
          <Mapa/>
          
 
-          {/* Recomendaciones de IA */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Recomendaciones de IA</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ul className="list-disc pl-5 space-y-2">
-                <li>
-                  Tipos de semillas recomendados: Maíz híbrido resistente a la
-                  sequía, Soja de ciclo corto
-                </li>
-                <li>Tiempo óptimo de plantación: Segunda semana de abril</li>
-                <li>
-                  Recomendaciones de riego: Implementar riego por goteo,
-                  programar riegos cortos y frecuentes
-                </li>
-                <li>
-                  Sugerencia de cultivo: Considerar la rotación con leguminosas
-                  para mejorar la salud del suelo
-                </li>
-              </ul>
-            </CardContent>
-          </Card>
+         <SeedModal/>
         </div>
       </div>
     </div>
