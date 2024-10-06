@@ -1,6 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import { WiHumidity, WiSunset, WiWindy } from "react-icons/wi";
+import { SiMoonrepo } from "react-icons/si";
+import { FiSunrise } from "react-icons/fi";
+import { TbSunset } from "react-icons/tb";
 import {
   getCurrentWeather,
   getFutureForecast,
@@ -20,7 +24,7 @@ import {
 } from "recharts";
 import { Progress } from "@/components/ui/progress";
 import { ChartContainer } from "@/components/ui/chart";
-import { Separator } from "@/components/ui/separator"
+import { Separator } from "@/components/ui/separator";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function TestPage() {
@@ -62,7 +66,7 @@ export default function TestPage() {
     }
   };
 
-  const minDate = addDays(new Date(), 14);
+  const maxDate = addDays(new Date(), 14);
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center">
@@ -95,7 +99,7 @@ export default function TestPage() {
         mode="single"
         selected={selectedDate}
         onSelect={handleDateSelect} // Cambiado a la nueva función
-        disabled={(date) => date < minDate}
+        disabled={(date) => date > maxDate || date < new Date()}
       />
 
       {selectedDate && (
@@ -109,7 +113,7 @@ export default function TestPage() {
         {futureForecastData && (
           <Card>
             <CardHeader>
-              <CardTitle>Pronóstico a Futuro</CardTitle>
+              <CardTitle>Temperatura</CardTitle>
             </CardHeader>
             <CardContent>
               <ChartContainer
@@ -149,18 +153,91 @@ export default function TestPage() {
           </Card>
         )}
 
-        <Separator/>
+        <Separator />
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Condición Climática</CardTitle>
-          </CardHeader>
-          <CardContent>
-
-          </CardContent>
-        </Card>
+        {/* Condición Climática */}
+        {futureForecastData && (
+          <Card>
+            <CardHeader>
+              <CardTitle>Condición Climática</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center gap-4">
+                {/* Icono del clima */}
+                <img
+                  src={
+                    futureForecastData.forecast.forecastday[0].day.condition
+                      .icon
+                  }
+                  alt="weather icon"
+                  className="w-12 h-12"
+                />
+                <div>
+                  {/* Condición del día */}
+                  <i className="text-lg">
+                    {
+                      futureForecastData.forecast.forecastday[0].day.condition
+                        .text
+                    }
+                  </i>
+                  {/* Viento */}
+                  <div className="flex items-center gap-2 mt-2">
+                    <WiWindy className="w-6 h-6" />
+                    <p>
+                      Viento:{" "}
+                      <i>{ futureForecastData.forecast.forecastday[0].day.maxwind_kph } km/h</i>
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2 mt-2">
+                    <WiHumidity className="w-6 h-6" />
+                    <p>
+                      Humedad:{" "}
+                      {
+                        futureForecastData.forecast.forecastday[0].day
+                          .avghumidity
+                      }
+                      %
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+ 
+        {/* ASTRO */}
+        {futureForecastData && (
+          <Card>
+            <CardHeader>
+              <CardTitle>Astro</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center gap-4">
+                {/* Icono del ASTRO */}
+                <SiMoonrepo className="w-12 h-12" />
+                <div>
+                  {/* HORA DE AMANECER */}
+                  <div className="flex items-center gap-2 mt-2">
+                    <FiSunrise className="w-3.5 h-3.5 ml-1.5" />
+                    <p>
+                      Amanecer:{" "}
+                      <em>{ futureForecastData.forecast.forecastday[0].astro.sunrise }</em>
+                    </p>
+                  </div>
+                  {/* HORA DE SALIDA DE LA LUNA */}
+                  <div className="flex items-center gap-2 mt-2">
+                    <TbSunset className="w-4 h-4 ml-1" />
+                    <p>
+                      Atardecer:{" "}
+                      <em>{ futureForecastData.forecast.forecastday[0].astro.sunset }</em>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
       </div>
-      
     </div>
   );
 }

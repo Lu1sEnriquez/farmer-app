@@ -22,18 +22,28 @@ export async function getCurrentWeather(Longitud: string, Latitud: string) {
   }
 }
 
-export async function getFutureForecast( longitud: string, latitud: string, dateTime: Date ) {
+export async function getFutureForecast(longitud: string, latitud: string, dateTime: Date) {
   try {
     const dt = dateTime.toISOString().split('T')[0];
-    const res = await fetch(`${apiUrl}/future.json?q=${longitud},${latitud}&dt=${dt}&lang=es&key=${apiKey}`, {
+    const userDate = new Date(dt);
+
+    const currentDate = new Date();
+    const today = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
+
+    // Calcular la diferencia en milisegundos
+    const diffTime = Math.abs(userDate.getTime() - today.getTime());
+    // Calcular la diferencia en días
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    const res = await fetch(`${apiUrl}/forecast.json?q=${longitud},${latitud}&days=${diffDays}&lang=es&key=${apiKey}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
       },
     });
 
-    if(!res.ok) {
-      throw new Error(`Error: ${res.url}`)
+    if (!res.ok) {
+      throw new Error(`Error: ${res.url}`);
     }
 
     const data = await res.json();
