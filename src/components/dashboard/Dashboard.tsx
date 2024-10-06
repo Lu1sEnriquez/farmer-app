@@ -1,6 +1,5 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   BarChart,
@@ -17,9 +16,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-
-import Map, { Marker } from "react-map-gl";
-import "mapbox-gl/dist/mapbox-gl.css";
+import { Mapa } from "../Mapa/Mapa";
 
 const rainfallData = [
   { month: "Ene", frecuencia: 5, probabilidad: 30 },
@@ -38,40 +35,10 @@ const weatherData = [
 
 
 
-function MapComponent() {
-  const [viewState, setViewState] = useState({
-    longitude: -74.5,
-    latitude: 40,
-    zoom: 9,
-  });
 
-  return (
-    <Map
-      {...viewState}
-      onMove={(evt) => setViewState(evt.viewState)}
-      style={{ width: "100%", height: "100%" }}
-      mapStyle="mapbox://styles/mapbox/streets-v11"
-      mapboxAccessToken="YOUR_MAPBOX_ACCESS_TOKEN_HERE"
-    >
-      <Marker
-        longitude={viewState.longitude}
-        latitude={viewState.latitude}
-        color="red"
-      />
-    </Map>
-  );
-}
 
 export default function Dashboard() {
-  const [mounted, setMounted] = useState(false);
- 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
-  if (!mounted) {
-    return null;
-  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -83,16 +50,7 @@ export default function Dashboard() {
         <div className="grid grid-cols-1 gap-4">
           {/* Mapa interactivo */}
           
-          <Card>
-         
-            <CardHeader>
-              <CardTitle>Ubicación del Agricultor</CardTitle>
-            </CardHeader>
-            <CardContent className="h-[300px]">
-              <MapComponent />
-            </CardContent>
-          </Card>
-
+         <Mapa/>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Gráfico de lluvia */}
             <Card>
