@@ -1,0 +1,1 @@
+export const MAPBOX_ACCESTOKEN = process.env.MAPBOX_ACCESTOKEN || "pk.eyJ1IjoiZXJpY2phc2llbDE3IiwiYSI6ImNtMXdndmplcDBvNnEya29oZXhkNWphaWgifQ.622bZ8vb1dMS3B57NPw7Gg";
