@@ -48,7 +48,7 @@ export default function Home() {
           navigation={true}
           pagination={{ clickable: true }}
           modules={[Zoom, Navigation, Pagination]}
-          className="mt-6"
+          className="mt-6 w-500 h-500"
           slidesPerView={1}
           spaceBetween={30}
         >
