@@ -7,9 +7,11 @@ import Map, {
 } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { MAPBOX_ACCESTOKEN } from "@/constants/api-keys";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { Card, CardContent, } from "../ui/card";
 import { MdDelete } from "react-icons/md";
-import { IoAddOutline } from "react-icons/io5";
+import "@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
 
 // Tipos para el estado del marcador y la vista del mapa
 interface MarkerType {
@@ -31,6 +33,7 @@ export const Mapa = () => {
   });
 
   const [marker, setMarker] = useState<MarkerType | null>(null); // Estado para el marcador
+  const [searchQuery, setSearchQuery] = useState<string>(""); // Estado para la búsqueda
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -48,6 +51,9 @@ export const Mapa = () => {
             longitude, // Corrige la asignación del marcador
             latitude,
           });
+
+          // Obtener la dirección a partir de la ubicación inicial
+          reverseGeocode(latitude, longitude);
         },
         (error) => {
           console.error("Error obteniendo la ubicación del usuario:", error);
@@ -61,45 +67,96 @@ export const Mapa = () => {
     setViewState(evt.viewState);
   };
 
-  // Maneja el clic en el mapa para agregar un marcador
+  // Maneja el clic en el mapa para agregar un marcador y actualizar la dirección
   const handleMapClick = (evt: MapLayerMouseEvent) => {
     const { lngLat } = evt; // Obtiene la latitud y longitud del clic
     setMarker({
       longitude: lngLat.lng,
       latitude: lngLat.lat,
     });
+    // Realiza geocodificación inversa para obtener la dirección
+    reverseGeocode(lngLat.lat, lngLat.lng);
   };
 
   // Función para eliminar el marcador
   const removeMarker = () => {
     setMarker(null);
+    setSearchQuery("");
   };
 
-  // Agregar marcador en la esquina del mapa
-  const addCornerMarker = () => {
-    setMarker({
-      longitude: viewState.longitude - 0.05, // Ajusta según el centro de la vista
-      latitude: viewState.latitude + 0.05,
-    });
+  // Función para buscar una ubicación utilizando la API de Mapbox Geocoding
+  const searchLocation = async () => {
+    const query = encodeURIComponent(searchQuery);
+    const response = await fetch(
+      `https://api.mapbox.com/geocoding/v5/mapbox.places/${query}.json?access_token=${MAPBOX_ACCESTOKEN}`
+    );
+    const data = await response.json();
+
+    if (data.features && data.features.length > 0) {
+      const { center, place_name } = data.features[0];
+      const longitude = center[0];
+      const latitude = center[1];
+
+      // Centrar el mapa en la ubicación buscada
+      setViewState({
+        longitude,
+        latitude,
+        zoom: 12,
+      });
+
+      // Colocar un marcador en la ubicación
+      setMarker({
+        longitude,
+        latitude,
+      });
+
+      // Actualizar el input con la ubicación buscada
+      setSearchQuery(place_name);
+    } else {
+      alert("Ubicación no encontrada");
+    }
+  };
+
+  // Función para realizar geocodificación inversa (obtener la dirección a partir de las coordenadas)
+  const reverseGeocode = async (latitude: number, longitude: number) => {
+    const response = await fetch(
+      `https://api.mapbox.com/geocoding/v5/mapbox.places/${longitude},${latitude}.json?access_token=${MAPBOX_ACCESTOKEN}`
+    );
+    const data = await response.json();
+
+    if (data.features && data.features.length > 0) {
+      setSearchQuery(data.features[0].place_name); // Actualiza el input con la dirección
+    }
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Ubicación del Agricultor</CardTitle>
-      </CardHeader>
-      <CardContent className="min-h-fit">
-        <div className="flex flex-col w-10/12 m-auto relative">
-          <div className="absolute z-10 right-5 top-5 flex flex-col space-y-2 gap-3">
-          
-            <button
-              className="bg-red-500 rounded-full text-white p-1"
-              onClick={removeMarker}
-              style={{ marginLeft: "10px" }}
-            >
+    <div className="space-y-3">
+      <Card className="md:w-10/12 m-auto">
+        <div className="flex flex-row  items-center space-x-3 p-3">
+          <Input
+            type="text"
+            placeholder="Buscar ubicación"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="p-2 border border-gray-300 rounded-md"
+          />
+          <div className="flex flex-row space-x-2">
+            <Button onClick={searchLocation}>Buscar</Button>
+            <Button variant={"destructive"} onClick={removeMarker}>
               <MdDelete size={30} />
-            </button>
+            </Button>
           </div>
+        </div>
+      </Card>
+      <Card className="md:w-10/12 m-auto">
+        <CardContent className="min-h-fit relative">
+          <button
+            className="bg-red-500 rounded-full text-white p-1 absolute z-10 right-10 bottom-10"
+            onClick={removeMarker}
+          >
+            <MdDelete size={30} />
+          </button>
+
           <Map
             {...viewState}
             onMove={handleMove} // Manejar el movimiento del mapa
@@ -115,14 +172,15 @@ export const Mapa = () => {
           >
             {marker && (
               <Marker
+                draggable
                 longitude={marker.longitude}
                 latitude={marker.latitude}
                 color="red"
               />
             )}
           </Map>
-        </div>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </div>
   );
 };
