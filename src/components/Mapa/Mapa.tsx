@@ -3,7 +3,8 @@ import { useEffect, useState } from "react";
 import Map, {
   Marker,
   ViewStateChangeEvent,
-  MapLayerMouseEvent,
+
+  MarkerDragEvent,
 } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { MAPBOX_ACCESTOKEN } from "@/constants/api-keys";
@@ -12,6 +13,8 @@ import { MdDelete } from "react-icons/md";
 import "@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
+import {  MapMouseEvent } from "mapbox-gl";
+import { DatePicker } from "../ui/data-picker";
 
 // Tipos para el estado del marcador y la vista del mapa
 interface MarkerType {
@@ -68,7 +71,7 @@ export const Mapa = () => {
   };
 
   // Maneja el clic en el mapa para agregar un marcador y actualizar la dirección
-  const handleMapClick = (evt: MapLayerMouseEvent) => {
+  const handleMapClick = (evt: MapMouseEvent) => {
     const { lngLat } = evt; // Obtiene la latitud y longitud del clic
     setMarker({
       longitude: lngLat.lng,
@@ -129,6 +132,16 @@ export const Mapa = () => {
     }
   };
 
+  // Función para manejar el evento onDragEnd del marcador
+  const handleMarkerDragEnd = (event: MarkerDragEvent) => {
+    const { lngLat } = event;
+    setMarker({
+      longitude: lngLat.lng,
+      latitude: lngLat.lat,
+    });
+    reverseGeocode(lngLat.lat, lngLat.lng); // Actualizar la dirección después de mover el marcador
+  };
+
   return (
     <div className="space-y-3">
       <Card className="md:w-10/12 m-auto">
@@ -145,6 +158,7 @@ export const Mapa = () => {
             <Button variant={"destructive"} onClick={removeMarker}>
               <MdDelete size={30} />
             </Button>
+            <DatePicker/>
           </div>
         </div>
       </Card>
@@ -172,6 +186,7 @@ export const Mapa = () => {
           >
             {marker && (
               <Marker
+                onDragEnd={handleMarkerDragEnd}
                 draggable
                 longitude={marker.longitude}
                 latitude={marker.latitude}

@@ -15,6 +15,8 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import WeatherCard from "@/components/dashboard/WeatherCard";
+import { FiSun } from "react-icons/fi";
 
 const rainfallData = [
   { month: "Ene", frecuencia: 5, probabilidad: 30 },
@@ -30,7 +32,11 @@ const weatherData = [
   { name: "Humedad", value: 60 },
   { name: "Viento", value: 15 },
 ];
-
+const weatherDetails = [
+  { label: "Precipitation", value: "10%" },
+  { label: "Humidity", value: "29%" },
+  { label: "Wind", value: "12 Mph" },
+]
 export default function ResultPage() {
   return (
     <div>
@@ -115,6 +121,17 @@ export default function ResultPage() {
             </ChartContainer>
           </CardContent>
         </Card>
+
+
+        <WeatherCard
+        day="Tuesday"
+        date="15 Jan 19"
+        location="París, FR"
+        temp={29}
+        description="Sunny"
+        icon={<FiSun className="w-16 h-16 mb-2" />}
+        details={weatherDetails}
+      />
       </div>
     </div>
   );
