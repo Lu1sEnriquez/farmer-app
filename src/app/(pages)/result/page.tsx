@@ -1,5 +1,6 @@
 "use client";
 
+import ChatInterface from "@/app/chat/page";
 import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartContainer } from "@/components/ui/chart";
@@ -47,18 +48,19 @@ export default function ResultPage() {
   };
 
   return (
-    <div className="grid grid-cols-1 m-5 md:grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 gap-4 p-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
       {/* Calendario */}
       <Calendar
         mode="single"
         selected={selectedDate}
         onSelect={handleDateSelect}
         disabled={(date) => date > maxDate || date < new Date()}
+        className="w-full"
       />
 
       {/* Gráfica de temperatura */}
       {futureForecastData && (
-        <Card className="col-span-3">
+        <Card className="col-span-1 md:col-span-2 lg:col-span-3">
           <CardHeader>
             <CardTitle>Temperatura</CardTitle>
           </CardHeader>
@@ -78,7 +80,7 @@ export default function ResultPage() {
                   color: "hsl(var(--chart-3))",
                 },
               }}
-              className="h-[300px]"
+              className="h-[300px] sm:h-[200px] md:h-[300px] lg:h-[400px]"
             >
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={futureForecastData.forecast.forecastday}>
@@ -109,6 +111,36 @@ export default function ResultPage() {
         </Card>
       )}
 
+      {/* Tarjeta de Recomendaciones Importantes */}
+      {futureForecastData && (
+        <Card className="col-span-1">
+          <CardHeader>
+            <CardTitle>Recomendaciones Importantes</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ul className="list-disc ml-4">
+              <li>Lleva un paraguas, hay probabilidad de lluvia.</li>
+              <li>Usa protector solar, índice UV alto.</li>
+              <li>Mantente hidratado, temperaturas elevadas.</li>
+            </ul>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Tarjeta de Componente de Chat */}
+      {futureForecastData && (
+        <Card className="col-span-4 h-100 w-100">
+          <CardHeader>
+            <CardTitle>Asistente Virtual</CardTitle>
+          </CardHeader>
+          <CardContent className="h-100 w-100">
+            <div className="chat-component h-100 w-100">
+              <ChatInterface />
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Tarjetas estilo Bento */}
       {futureForecastData && (
         <>
@@ -120,24 +152,43 @@ export default function ResultPage() {
             <CardContent>
               <div className="flex items-center gap-4">
                 <img
-                  src={futureForecastData.forecast.forecastday[0].day.condition.icon}
+                  src={
+                    futureForecastData.forecast.forecastday[0].day.condition
+                      .icon
+                  }
                   alt="weather icon"
-                  className="w-12 h-12"
+                  className="w-12 h-12 sm:w-10 sm:h-10"
                 />
                 <div>
                   <i className="text-lg">
-                    {futureForecastData.forecast.forecastday[0].day.condition.text}
+                    {
+                      futureForecastData.forecast.forecastday[0].day.condition
+                        .text
+                    }
                   </i>
                   <div className="flex items-center gap-2 mt-2">
                     <WiWindy className="w-6 h-6" />
                     <p>
                       Viento:{" "}
-                      <i>{futureForecastData.forecast.forecastday[0].day.maxwind_kph} km/h</i>
+                      <i>
+                        {
+                          futureForecastData.forecast.forecastday[0].day
+                            .maxwind_kph
+                        }{" "}
+                        km/h
+                      </i>
                     </p>
                   </div>
                   <div className="flex items-center gap-2 mt-2">
                     <WiHumidity className="w-6 h-6" />
-                    <p>Humedad: {futureForecastData.forecast.forecastday[0].day.avghumidity}%</p>
+                    <p>
+                      Humedad:{" "}
+                      {
+                        futureForecastData.forecast.forecastday[0].day
+                          .avghumidity
+                      }
+                      %
+                    </p>
                   </div>
                 </div>
               </div>
@@ -152,11 +203,16 @@ export default function ResultPage() {
             <CardContent>
               <div className="flex items-center gap-4">
                 <WiDaySunny className="w-8 h-8" />
-                <p>Índice UV: {futureForecastData.forecast.forecastday[0].day.uv}</p>
+                <p>
+                  Índice UV: {futureForecastData.forecast.forecastday[0].day.uv}
+                </p>
               </div>
               <div className="flex items-center gap-4 mt-4">
                 <WiBarometer className="w-8 h-8" />
-                <p>Visibilidad: {futureForecastData.forecast.forecastday[0].day.avgvis_km} km</p>
+                <p>
+                  Visibilidad:{" "}
+                  {futureForecastData.forecast.forecastday[0].day.avgvis_km} km
+                </p>
               </div>
             </CardContent>
           </Card>
@@ -170,16 +226,28 @@ export default function ResultPage() {
               <div className="flex items-center gap-4">
                 <FiSunrise className="w-8 h-8" />
                 <div>
-                  <p>Amanecer: {futureForecastData.forecast.forecastday[0].astro.sunrise}</p>
-                  <p>Atardecer: {futureForecastData.forecast.forecastday[0].astro.sunset}</p>
+                  <p>
+                    Amanecer:{" "}
+                    {futureForecastData.forecast.forecastday[0].astro.sunrise}
+                  </p>
+                  <p>
+                    Atardecer:{" "}
+                    {futureForecastData.forecast.forecastday[0].astro.sunset}
+                  </p>
                 </div>
               </div>
               <Separator className="my-2" />
               <div className="flex items-center gap-4">
                 <SiMoonrepo className="w-8 h-8" />
                 <div>
-                  <p>Salida de la Luna: {futureForecastData.forecast.forecastday[0].astro.moonrise}</p>
-                  <p>Puesta de la Luna: {futureForecastData.forecast.forecastday[0].astro.moonset}</p>
+                  <p>
+                    Salida de la luna:{" "}
+                    {futureForecastData.forecast.forecastday[0].astro.moonrise}
+                  </p>
+                  <p>
+                    Puesta de la luna:{" "}
+                    {futureForecastData.forecast.forecastday[0].astro.moonset}
+                  </p>
                 </div>
               </div>
             </CardContent>

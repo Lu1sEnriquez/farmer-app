@@ -1,5 +1,5 @@
 const apiUrl = "https://api.weatherapi.com/v1";
-const apiKey = '8cf034e557b54002a2322613240510'
+const apiKey = '8cf034e557b54002a2322613240510';
 
 export async function getCurrentWeather(Longitud: string, Latitud: string) {
   try {
