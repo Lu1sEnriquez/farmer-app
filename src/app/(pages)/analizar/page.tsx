@@ -1,8 +1,9 @@
+import Dashboard from "@/components/analizar/Dashboard";
 
 export default function AnalizarPage() {
   return (
-    <div>
-      <h1>Hello Page</h1>
+    <div className="">
+      <Dashboard/>
     </div>
   );
 }

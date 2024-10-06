@@ -14,13 +14,11 @@ import "@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import {  MapMouseEvent } from "mapbox-gl";
-import { DatePicker } from "../ui/data-picker";
+import useWeatherStore from "@/store/useWeatherStore";
+
 
 // Tipos para el estado del marcador y la vista del mapa
-interface MarkerType {
-  longitude: number;
-  latitude: number;
-}
+
 
 interface ViewStateType {
   longitude: number;
@@ -35,8 +33,8 @@ export const Mapa = () => {
     zoom: 9,
   });
 
-  const [marker, setMarker] = useState<MarkerType | null>(null); // Estado para el marcador
   const [searchQuery, setSearchQuery] = useState<string>(""); // Estado para la búsqueda
+  const { location, setLocation } = useWeatherStore(); // Usar Zustand para almacenar la ubicación
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -50,7 +48,7 @@ export const Mapa = () => {
             zoom: 12,
           }));
 
-          setMarker({
+          setLocation({
             longitude, // Corrige la asignación del marcador
             latitude,
           });
@@ -73,7 +71,7 @@ export const Mapa = () => {
   // Maneja el clic en el mapa para agregar un marcador y actualizar la dirección
   const handleMapClick = (evt: MapMouseEvent) => {
     const { lngLat } = evt; // Obtiene la latitud y longitud del clic
-    setMarker({
+    setLocation({
       longitude: lngLat.lng,
       latitude: lngLat.lat,
     });
@@ -83,7 +81,7 @@ export const Mapa = () => {
 
   // Función para eliminar el marcador
   const removeMarker = () => {
-    setMarker(null);
+    setLocation(null);
     setSearchQuery("");
   };
 
@@ -108,7 +106,7 @@ export const Mapa = () => {
       });
 
       // Colocar un marcador en la ubicación
-      setMarker({
+      setLocation({
         longitude,
         latitude,
       });
@@ -135,7 +133,7 @@ export const Mapa = () => {
   // Función para manejar el evento onDragEnd del marcador
   const handleMarkerDragEnd = (event: MarkerDragEvent) => {
     const { lngLat } = event;
-    setMarker({
+    setLocation({
       longitude: lngLat.lng,
       latitude: lngLat.lat,
     });
@@ -155,10 +153,10 @@ export const Mapa = () => {
           />
           <div className="flex flex-row space-x-2">
             <Button onClick={searchLocation}>Buscar</Button>
-            <Button variant={"destructive"} onClick={removeMarker}>
+            <Button className="bg-red-500 dark:hover:bg-red-600 hover:bg-red-400 text-white" onClick={removeMarker}>
               <MdDelete size={30} />
             </Button>
-            <DatePicker/>
+            
           </div>
         </div>
       </Card>
@@ -184,12 +182,12 @@ export const Mapa = () => {
             mapStyle="mapbox://styles/mapbox/outdoors-v12"
             mapboxAccessToken={MAPBOX_ACCESTOKEN}
           >
-            {marker && (
+            {location && (
               <Marker
                 onDragEnd={handleMarkerDragEnd}
                 draggable
-                longitude={marker.longitude}
-                latitude={marker.latitude}
+                longitude={location.longitude}
+                latitude={location.latitude}
                 color="red"
               />
             )}

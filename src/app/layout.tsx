@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
-import { Navbar } from "@/components/dashboard/Navbar";
+import { Navbar } from "@/components/analizar/Navbar";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -37,7 +37,10 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <Navbar/>
+          <div className="container mx-auto">
+
           {children}
+          </div>
         </ThemeProvider>
       </body>
     </html>
