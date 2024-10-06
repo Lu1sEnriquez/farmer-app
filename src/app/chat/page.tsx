@@ -57,7 +57,6 @@ export default function ChatInterface() {
           </div>
         </form>
       </div>
-      <span>chat works!</span>
     </>
   );
 }
