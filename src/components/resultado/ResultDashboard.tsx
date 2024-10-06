@@ -77,11 +77,11 @@ const ResultDashboard: React.FC<ResultDashboardProps> = ({
           </CardContent>
         </Card>
 
-        {/* Gráfica de temperatura */}
-        {futureForecastData && (
+       {/* Gráfica de temperatura */}
+       {futureForecastData && (
           <Card className="col-span-3">
             <CardHeader>
-              <CardTitle>Temperatura</CardTitle>
+              <CardTitle>Temperaturas Hasta El Día Seleccionado</CardTitle>
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={300}>
@@ -94,25 +94,25 @@ const ResultDashboard: React.FC<ResultDashboardProps> = ({
                   <Tooltip />
                   <Legend />
                   <Bar
-                    dataKey="maxTemp"
-                    fill="var(--color-maxtemp)"
+                    dataKey="day.maxtemp_c"
+                    fill="hsl(var(--chart-1))"
                     name="Temperatura Máxima (°C)"
                   />
                   <Bar
-                    dataKey="minTemp"
-                    fill="var(--color-mintemp)"
+                    dataKey="day.mintemp_c"
+                    fill="hsl(var(--chart-2))"
                     name="Temperatura Mínima (°C)"
                   />
                   <Bar
-                    dataKey="avgTemp"
-                    fill="var(--color-avgtemp)"
+                    dataKey="day.avgtemp_c"
+                    fill="hsl(var(--chart-3))"
                     name="Temperatura Promedio (°C)"
                   />
                 </BarChart>
               </ResponsiveContainer>
             </CardContent>
           </Card>
-        )}
+        )}
 
         {/* Condición Climática */}
         {futureForecastData && (

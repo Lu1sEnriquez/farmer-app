@@ -15,13 +15,23 @@ export const RecomendacionesCard: React.FC<ClimateAnalysisProps> = ({
 
   // Función para parsear el string a un objeto
   const parseData = (data: string) => {
-    const sections = data.split("**"); // Suponiendo que las secciones están separadas por **
+    const sections = data.split("**").filter(section => section.trim() !== ""); // Filtramos secciones vacías
     const analysis: Record<string, string> = {};
 
+    // Se procesan las secciones
     sections.forEach((section) => {
-      const [title, content] = section.split(":");
-      if (title && content) {
-        analysis[title.trim()] = content.trim();
+      const trimmedSection = section.trim();
+      if (trimmedSection) {
+        // Verificar si el párrafo comienza con un número seguido de un punto
+        const match = trimmedSection.match(/^(\d+)\.\s+(.*)/);
+        if (match) {
+          const title = match[0]; // Título completo con número
+          const content = match[2]; // Contenido después del título
+          analysis[title] = content.trim(); // Guardar título y contenido
+        } else {
+          // Si no hay título, se agrega el contenido como un párrafo normal
+          analysis["Párrafo Normal"] = (analysis["Párrafo Normal"] || "") + trimmedSection + "\n"; // Concatenar en el mismo campo
+        }
       }
     });
 
@@ -33,6 +43,17 @@ export const RecomendacionesCard: React.FC<ClimateAnalysisProps> = ({
     const parsedData = parseData(data);
     setAnalysisData(parsedData);
   }, [data]); // Dependencia en 'data'
+
+  // Función para determinar el estilo según el tipo de contenido
+  const getStyle = (key: string) => {
+    if (key.toLowerCase().includes("advertencia")) {
+      return "font-bold text-red-600"; // Estilo para advertencias
+    } else if (key.toLowerCase().includes("recomendación")) {
+      return "font-semibold text-blue-600"; // Estilo para recomendaciones
+    } else {
+      return ""; // Estilo por defecto
+    }
+  };
 
   return (
     <Card>
@@ -46,8 +67,8 @@ export const RecomendacionesCard: React.FC<ClimateAnalysisProps> = ({
         ) : (
           Object.entries(analysisData).map(([key, value]) => (
             <div key={key} className="mt-4">
-              <h3 className="text-xl font-semibold">{key}:</h3>
-              <p>{value}</p>
+              <h3 className={`text-xl ${getStyle(key)}`}>{key}:</h3>
+              <p className="text-base whitespace-pre-wrap">{value}</p> {/* Usar whitespace-pre-wrap para mantener los saltos de línea */}
             </div>
           ))
         )}
