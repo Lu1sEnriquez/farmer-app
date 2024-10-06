@@ -77,7 +77,7 @@ function MapComponent() {
       {...viewState}
       onMove={(evt) => setViewState(evt.viewState)}
       style={{ width: "100%", height: "100%" }}
-      mapStyle="mapbox://styles/mapbox/streets-v12"
+      mapStyle="mapbox://styles/mapbox/outdoors-v12"
       // mapboxAccessToken={process.env.MAPS_TOKEN}
       mapboxAccessToken="pk.eyJ1IjoiZXJpY2phc2llbDE3IiwiYSI6ImNtMXdndmplcDBvNnEya29oZXhkNWphaWgifQ.622bZ8vb1dMS3B57NPw7Gg"
     >

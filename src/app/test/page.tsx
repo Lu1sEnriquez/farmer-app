@@ -1,21 +1,27 @@
 "use client";
 
 import { useState } from "react";
-import { getCurrentWeather } from "@/services/weather/weather";
-import { getFutureForecast } from "@/services/weather/weather"; // Asegúrate de importar la función
-import { Calendar } from "@/components/ui/calendar"; // Ajusta la ruta si es necesario
-import { format, addDays } from "date-fns";
-import { Button } from "@/components/ui/button"; // Botón desde shadcn
 import {
-  LineChart,
-  Line,
+  getCurrentWeather,
+  getFutureForecast,
+} from "@/services/weather/weather";
+import { Calendar } from "@/components/ui/calendar";
+import { format, addDays } from "date-fns";
+import { Button } from "@/components/ui/button";
+import {
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
   Legend,
   ResponsiveContainer,
-} from "recharts"; // Importa componentes de Recharts
+  BarChart,
+  Bar,
+} from "recharts";
+import { Progress } from "@/components/ui/progress";
+import { ChartContainer } from "@/components/ui/chart";
+import { Separator } from "@/components/ui/separator"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function TestPage() {
   const [weather, setWeather] = useState<any>(null);
@@ -66,8 +72,17 @@ export default function TestPage() {
         Obtener Datos del Clima
       </Button>
 
-      {loading && <p>Cargando...</p>}
+      {/* Mostrar barra de progreso si está cargando */}
+      {loading && (
+        <div className="w-full max-w-md mb-4">
+          <Progress value={89} className="h-4" />
+        </div>
+      )}
+
+      {/* Mostrar error si hay alguno */}
       {error && <p className="text-red-500">{error}</p>}
+
+      {/* Mostrar datos si la llamada fue exitosa */}
       {weather && (
         <div className="mt-4">
           <h2 className="text-lg font-semibold">Datos del Clima:</h2>
@@ -89,34 +104,63 @@ export default function TestPage() {
         </div>
       )}
 
-      {/* Mostrar el gráfico si hay datos de pronóstico */}
-      {futureForecastData && (
-        <div className="mt-8 w-full h-96">
-          <h2 className="text-lg font-semibold">Pronóstico a Futuro:</h2>
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={futureForecastData.forecast.forecastday}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="date" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Line
-                type="monotone"
-                dataKey="day.maxtemp_c"
-                stroke="#8884d8"
-                activeDot={{ r: 8 }}
-                name="Temperatura Máxima (°C)"
-              />
-              <Line
-                type="monotone"
-                dataKey="day.mintemp_c"
-                stroke="#82ca9d"
-                name="Temperatura Mínima (°C)"
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
-      )}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-5 mb-5">
+        {/* Pronóstico a Futuro */}
+        {futureForecastData && (
+          <Card>
+            <CardHeader>
+              <CardTitle>Pronóstico a Futuro</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ChartContainer
+                config={{
+                  mintemp: {
+                    label: "Temperatura Mínima (°C)",
+                    color: "hsl(var(--chart-2))",
+                  },
+                  maxtemp: {
+                    label: "Temperatura Máxima (°C)",
+                    color: "hsl(var(--chart-1))",
+                  },
+                }}
+                className="h-[300px]"
+              >
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={futureForecastData.forecast.forecastday}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="date" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Bar
+                      dataKey="day.mintemp_c"
+                      fill="var(--color-mintemp)"
+                      name="Temperatura Mínima (°C)"
+                    />
+                    <Bar
+                      dataKey="day.maxtemp_c"
+                      fill="var(--color-maxtemp)"
+                      name="Temperatura Máxima (°C)"
+                    />
+                  </BarChart>
+                </ResponsiveContainer>
+              </ChartContainer>
+            </CardContent>
+          </Card>
+        )}
+
+        <Separator/>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Condición Climática</CardTitle>
+          </CardHeader>
+          <CardContent>
+
+          </CardContent>
+        </Card>
+      </div>
+      
     </div>
   );
 }

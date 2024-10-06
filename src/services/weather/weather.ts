@@ -24,15 +24,16 @@ export async function getCurrentWeather(Longitud: string, Latitud: string) {
 
 export async function getFutureForecast( longitud: string, latitud: string, dateTime: Date ) {
   try {
-    const res = await fetch(`${apiUrl}/future.json?q=${longitud},${latitud}&dt=${dateTime}&lang=es&key=${apiKey}`, {
+    const dt = dateTime.toISOString().split('T')[0];
+    const res = await fetch(`${apiUrl}/future.json?q=${longitud},${latitud}&dt=${dt}&lang=es&key=${apiKey}`, {
       method: "GET",
       headers: {
-        "Content-Type": "applicatino/json",
+        "Content-Type": "application/json",
       },
     });
 
     if(!res.ok) {
-      throw new Error(`Error: ${res}`)
+      throw new Error(`Error: ${res.url}`)
     }
 
     const data = await res.json();
