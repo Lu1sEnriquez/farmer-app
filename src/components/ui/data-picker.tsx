@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Popover,
   PopoverContent,
@@ -11,8 +13,8 @@ import { Calendar } from "./calendar";
 import { format } from "date-fns";
 
 interface DatePickerProps {
-  selected: Date | undefined; // Cambiado a Date | undefined
-  onChange: (date: Date | undefined) => void; // Cambiado a Date | undefined
+  selected: Date | null; // Cambiar a Date | null para evitar strings
+  onChange: (date: Date | null) => void; // Cambiar a Date | null
   classname: string;
   children: ReactNode;
 }
@@ -50,8 +52,10 @@ export const DatePicker: React.FC<DatePickerProps> = ({
       <PopoverContent className="w-auto p-0">
         <Calendar
           mode="single"
-          selected={selected}
-          onSelect={onChange} // Asegúrate de que onSelect esté en el formato correcto
+          selected={selected || undefined} // Asegúrate de que selected sea undefined si es null
+          onSelect={(date) => {
+            onChange(date ?? null); // Llama a onChange con la fecha o null
+          }}
           initialFocus
         />
       </PopoverContent>
