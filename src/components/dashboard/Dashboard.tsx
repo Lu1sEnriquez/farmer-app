@@ -7,6 +7,7 @@ import SeedModal from "./ModalSelectAnalisis";
 
 
 
+
 export default function Dashboard() {
 
 
@@ -23,9 +24,14 @@ export default function Dashboard() {
          <Mapa/>
          
 
+
          <SeedModal/>
         </div>
       </div>
     </div>
   );
 }
+function setViewState(arg0: any) {
+  throw new Error("Function not implemented.");
+}
+
