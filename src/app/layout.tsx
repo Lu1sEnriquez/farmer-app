@@ -37,7 +37,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <Navbar/>
-          <div className="container mx-auto">
+          <div className="container mx-auto max-w-screen-xl">
 
           {children}
           </div>

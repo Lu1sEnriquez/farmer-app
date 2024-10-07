@@ -12,25 +12,28 @@ import {
 } from "@/components/ui/dialog";
 import { DatePicker } from "@/components/ui/data-picker";
 import { CalendarIcon } from "lucide-react";
-import { format } from "date-fns";
+import { format, addDays } from "date-fns"; // Importa addDays
 import { cn } from "@/lib/utils";
 import { Label } from "../ui/label";
-import useWeatherStore from "@/store/useWeatherStore"; // Importa el store de Zustand
-import {  useRouter } from "next/navigation";
+import useWeatherStore from "@/store/useWeatherStore";
+import { useRouter } from "next/navigation";
 
 const GenerarAnalisisDialog = () => {
-  const { seedType, setSeedType, startDate, setStartDate, location } = useWeatherStore(); // Usar Zustand
-  const router = useRouter()
-  const [isOpen, setIsOpen] = useState(false); // Controla la apertura del modal
+  const { seedType, setSeedType, startDate, setStartDate, location } = useWeatherStore();
+  const router = useRouter();
+  const [isOpen, setIsOpen] = useState(false);
 
   const onClose = () => {
     setIsOpen(false);
   };
 
-  // Al guardar la fecha, asegúrate de que sea un objeto Date
+  // Calculamos el día de hoy y el rango máximo de 14 días
+  const today = new Date();
+  const maxDate = addDays(today, 14); // Fecha límite de 14 días después de hoy
+
   const handleDateChange = (date: Date | null) => {
     if (date) {
-      setStartDate(date); // Guardar el objeto Date directamente
+      setStartDate(date);
     } else {
       setStartDate(null);
     }
@@ -40,14 +43,16 @@ const GenerarAnalisisDialog = () => {
     console.log("Tipo de semilla:", seedType);
     console.log("Fecha seleccionada:", startDate);
     console.log("location:", location);
-    router.push('/result'); // Redirigir a la página de resultados
+    router.push("/result");
     onClose();
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button variant={"blue"} className="w-40">Generar Análisis</Button>
+        <Button variant={"blue"} className="w-40">
+          Generar Análisis
+        </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogTitle className="text-lg font-bold mb-4">Análisis Personalizado</DialogTitle>
@@ -61,7 +66,9 @@ const GenerarAnalisisDialog = () => {
         <Label>Fecha:</Label>
         <DatePicker
           selected={startDate}
-          onChange={handleDateChange} // Llama a handleDateChange directamente
+          onChange={handleDateChange}
+          minDate={today} // Establecemos la fecha mínima
+          maxDate={maxDate} // Establecemos la fecha máxima
           classname="border p-2 rounded"
         >
           <Button
@@ -76,8 +83,12 @@ const GenerarAnalisisDialog = () => {
           </Button>
         </DatePicker>
         <DialogFooter>
-          <Button variant={"secondary"} onClick={onClose} className="mt-4">Cerrar</Button>
-          <Button variant={"blue"} onClick={handleSubmit} className="mt-4">Generar</Button>
+          <Button variant={"secondary"} onClick={onClose} className="mt-4">
+            Cerrar
+          </Button>
+          <Button variant={"blue"} onClick={handleSubmit} className="mt-4">
+            Generar
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

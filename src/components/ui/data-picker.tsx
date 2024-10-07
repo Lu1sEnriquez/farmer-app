@@ -10,21 +10,31 @@ import { Button } from "./button";
 import React, { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { Calendar } from "./calendar";
-import { format } from "date-fns";
+import { format, isBefore, isAfter } from "date-fns";
 
 interface DatePickerProps {
-  selected: Date | null; // Cambiar a Date | null para evitar strings
-  onChange: (date: Date | null) => void; // Cambiar a Date | null
+  selected: Date | null; // Puede ser Date o null
+  onChange: (date: Date | null) => void; // Cambia la fecha o null
+  minDate?: Date; // Fecha mínima permitida
+  maxDate?: Date; // Fecha máxima permitida
   classname: string;
   children: ReactNode;
 }
 
-// En la implementación de DatePicker
 export const DatePicker: React.FC<DatePickerProps> = ({
   selected,
   onChange,
+  minDate,
+  maxDate,
   children,
 }) => {
+  // Función que verifica si la fecha está fuera del rango permitido
+  const isDateDisabled = (date: Date) => {
+    if (minDate && isBefore(date, minDate)) return true;
+    if (maxDate && isAfter(date, maxDate)) return true;
+    return false;
+  };
+
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -54,8 +64,14 @@ export const DatePicker: React.FC<DatePickerProps> = ({
           mode="single"
           selected={selected || undefined} // Asegúrate de que selected sea undefined si es null
           onSelect={(date) => {
-            onChange(date ?? null); // Llama a onChange con la fecha o null
+            // Solo permite seleccionar fechas dentro del rango
+            if (date && !isDateDisabled(date)) {
+              onChange(date);
+            } else {
+              onChange(null);
+            }
           }}
+          disabled={(date) => isDateDisabled(date)} // Deshabilita fechas fuera del rango
           initialFocus
         />
       </PopoverContent>
